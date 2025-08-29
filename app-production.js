@@ -12,9 +12,8 @@ class BalloonDataFetcher {
     this.jetStreamData = null;
 
     // Detect if running locally or in production
-    this.apiBase = window.location.hostname === 'localhost' 
-      ? 'http://localhost:8001' 
-      : '';
+    this.apiBase =
+      window.location.hostname === "localhost" ? "http://localhost:8001" : "";
 
     this.logMessage("Initializing StratoSphere...");
   }
@@ -113,10 +112,7 @@ class BalloonDataFetcher {
     this.balloonTracks = balloonTracks;
 
     // Calculate statistics
-    const totalPoints = allHourData.reduce(
-      (sum, hour) => sum + hour.length,
-      0
-    );
+    const totalPoints = allHourData.reduce((sum, hour) => sum + hour.length, 0);
     const avgPerHour = Math.round(totalPoints / 24);
     const dataQuality = Math.round(
       (totalPoints / (24 * allHourData[0].length)) * 100

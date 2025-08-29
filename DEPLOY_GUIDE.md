@@ -5,6 +5,7 @@
 ### Step 1: Push to GitHub
 
 1. **Create a new repository on GitHub:**
+
    - Go to https://github.com/new
    - Name it: `windborne-stratosphere`
    - Keep it public
@@ -20,10 +21,12 @@
 ### Step 2: Deploy to Vercel
 
 1. **Go to Vercel:**
+
    - Visit https://vercel.com
    - Sign up/login with GitHub
 
 2. **Import your project:**
+
    - Click "Add New Project"
    - Import your `windborne-stratosphere` repository
    - Click "Deploy"
@@ -36,6 +39,7 @@
 ### Step 3: Test Your Deployment
 
 Visit your deployed URL and verify:
+
 - ✅ Map loads with balloons
 - ✅ Jet streams are visible
 - ✅ Time slider works
@@ -83,6 +87,7 @@ vercel
 ## 🎯 Final Checklist
 
 Before submitting:
+
 - [ ] App is publicly accessible
 - [ ] All 24 hours of data load
 - [ ] Jet streams are visible
@@ -93,6 +98,7 @@ Before submitting:
 ## Need Help?
 
 Common issues:
+
 - **CORS errors**: Should be fixed with Vercel functions
 - **Data not loading**: Check browser console
 - **Deploy failed**: Check Vercel logs
