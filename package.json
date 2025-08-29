@@ -2,6 +2,5 @@
   "name": "windborne-stratosphere",
   "version": "1.0.0",
   "description": "Real-time atmospheric intelligence platform for WindBorne balloon constellation",
-  "author": "Kelton J. Madden",
-  "license": "MIT"
+  "author": "Kelton J. Madden"
 }
