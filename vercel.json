@@ -3,7 +3,7 @@
     "api/windborne/[hour].js": {
       "maxDuration": 10
     },
-    "api/jetstream.js": {
+    "api/weather.js": {
       "maxDuration": 10
     }
   },
