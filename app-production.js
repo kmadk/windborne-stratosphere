@@ -343,21 +343,6 @@ class BalloonDataFetcher {
     }
   }
 
-  clearBalloonSelection() {
-    // Clear selected balloon
-    this.selectedBalloon = null;
-    
-    // Remove trajectory line from map
-    if (this.trajectoryLine) {
-      this.map.removeLayer(this.trajectoryLine);
-      this.trajectoryLine = null;
-    }
-    
-    // Reset selected balloon info panel
-    document.getElementById("selected-balloon").innerHTML = 
-      '<p class="no-selection">Click a balloon to see details</p>';
-  }
-
   updateAltitudeChart(hourData) {
     // Create altitude distribution
     const bins = [0, 5, 10, 15, 20, 25];
@@ -431,12 +416,6 @@ class BalloonDataFetcher {
     slider.addEventListener("input", (e) => {
       this.currentHour = parseInt(e.target.value);
       document.getElementById("hour-display").textContent = this.currentHour;
-      
-      // Clear balloon selection when time changes
-      if (this.selectedBalloon) {
-        this.clearBalloonSelection();
-      }
-      
       this.updateBalloonDisplay(this.currentHour);
     });
 
@@ -445,10 +424,6 @@ class BalloonDataFetcher {
       playButton.textContent = this.isPlaying ? "⏸" : "▶";
 
       if (this.isPlaying) {
-        // Clear selection when starting animation
-        if (this.selectedBalloon) {
-          this.clearBalloonSelection();
-        }
         this.animate();
       }
     });
@@ -460,12 +435,6 @@ class BalloonDataFetcher {
     this.currentHour = (this.currentHour + 1) % 24;
     document.getElementById("time-slider").value = this.currentHour;
     document.getElementById("hour-display").textContent = this.currentHour;
-    
-    // Clear balloon selection during animation
-    if (this.selectedBalloon) {
-      this.clearBalloonSelection();
-    }
-    
     this.updateBalloonDisplay(this.currentHour);
 
     setTimeout(() => this.animate(), 1000); // Update every second
