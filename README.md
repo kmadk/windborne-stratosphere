@@ -31,7 +31,3 @@ https://windborne-stratosphere.vercel.app
 
 - `/api/windborne/[hour]` - Returns balloon positions for specified hour (00-23)
 - `/api/jetstream` - Returns global jet stream data with wind patterns
-
-## License
-
-MIT

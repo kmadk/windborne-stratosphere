@@ -133,8 +133,11 @@ class BalloonDataFetcher {
       zoom: 2,
       minZoom: 2,
       maxZoom: 10,
-      maxBounds: [[-90, -180], [90, 180]],
-      maxBoundsViscosity: 1.0
+      maxBounds: [
+        [-90, -180],
+        [90, 180],
+      ],
+      maxBoundsViscosity: 1.0,
     });
 
     // Add dark theme tiles
@@ -144,7 +147,7 @@ class BalloonDataFetcher {
         attribution: "© CARTO",
         subdomains: "abcd",
         maxZoom: 10,
-        noWrap: true
+        noWrap: true,
       }
     ).addTo(this.map);
 
