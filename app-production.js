@@ -127,8 +127,15 @@ class BalloonDataFetcher {
   }
 
   initializeMap() {
-    // Initialize Leaflet map
-    this.map = L.map("map").setView([20, 0], 2);
+    // Initialize Leaflet map with zoom limits
+    this.map = L.map("map", {
+      center: [20, 0],
+      zoom: 2,
+      minZoom: 2,
+      maxZoom: 10,
+      maxBounds: [[-90, -180], [90, 180]],
+      maxBoundsViscosity: 1.0
+    });
 
     // Add dark theme tiles
     L.tileLayer(
@@ -136,7 +143,8 @@ class BalloonDataFetcher {
       {
         attribution: "© CARTO",
         subdomains: "abcd",
-        maxZoom: 19,
+        maxZoom: 10,
+        noWrap: true
       }
     ).addTo(this.map);
 
