@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>StratoSphere - WindBorne Atmospheric Intelligence</title>
+
+    <!-- Leaflet CSS -->
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+    />
+
+    <!-- Chart.js for altitude visualization -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div id="app">
+      <header>
+        <h1>StratoSphere</h1>
+        <div id="status">Loading balloon data...</div>
+        <div id="time-control">
+          <button id="play-pause">▶</button>
+          <input type="range" id="time-slider" min="0" max="23" value="0" />
+          <span id="time-display">Current Hour: 0</span>
+        </div>
+      </header>
+
+      <main>
+        <div id="map"></div>
+        <div id="sidebar">
+          <div class="panel">
+            <h3>Balloon Statistics</h3>
+            <div id="balloon-info">
+              <p>Total Balloons: <span id="balloon-count">0</span></p>
+              <p>Data Quality: <span id="data-quality">-</span></p>
+              <p>Avg Altitude: <span id="avg-altitude">-</span></p>
+              <p>Current Hour: <span id="current-hour">0</span></p>
+              <p>
+                Jet Streams:
+                <span id="jet-stream-status" style="color: #ff00ff"
+                  >Loading...</span
+                >
+              </p>
+            </div>
+          </div>
+
+          <div class="panel">
+            <h3>Altitude Distribution</h3>
+            <canvas id="altitude-chart"></canvas>
+          </div>
+
+          <div class="panel">
+            <h3>Selected Balloon</h3>
+            <div id="selected-balloon">
+              <p class="no-selection">Click a balloon to see details</p>
+            </div>
+          </div>
+
+          <div class="panel">
+            <h3>Debug Log</h3>
+            <div id="debug-log"></div>
+          </div>
+        </div>
+      </main>
+    </div>
+
+    <!-- Leaflet JavaScript -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <!-- Chart.js for altitude distribution -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Main application -->
+    <script src="app-production.js"></script>
+  </body>
+</html>

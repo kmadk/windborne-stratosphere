@@ -1,0 +1,16 @@
+{
+  "functions": {
+    "api/windborne/[hour].js": {
+      "maxDuration": 10
+    },
+    "api/jetstream.js": {
+      "maxDuration": 10
+    }
+  },
+  "rewrites": [
+    {
+      "source": "/api/windborne/:hour",
+      "destination": "/api/windborne/[hour]"
+    }
+  ]
+}
