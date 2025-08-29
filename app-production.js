@@ -158,20 +158,50 @@ class BalloonDataFetcher {
   }
 
   async loadJetStreamData() {
-    this.logMessage("Loading jet stream data...");
+    this.logMessage("Loading atmospheric weather data...");
     try {
-      const response = await fetch(`${this.apiBase}/api/jetstream`);
+      // Fetch real weather data including jet streams
+      const response = await fetch(`${this.apiBase}/api/weather`);
       const data = await response.json();
       this.jetStreamData = data;
       this.displayJetStreams();
-      this.logMessage(`Loaded ${data.jetStreams.length} jet stream points`);
-      document.getElementById("jet-stream-status").textContent = "✓ Visible";
+      
+      // Analyze balloon-jet stream interactions
+      this.analyzeAtmosphericInteractions();
+      
+      this.logMessage(`Loaded ${data.jetStreams.length} weather data points`);
+      this.logMessage(`Data source: ${data.metadata.dataSource}`);
+      document.getElementById("jet-stream-status").textContent = "✓ Live";
       document.getElementById("jet-stream-status").style.color = "#00ff66";
     } catch (error) {
       this.logMessage(
-        `Failed to load jet stream data: ${error.message}`,
+        `Failed to load weather data: ${error.message}`,
         "error"
       );
+    }
+  }
+
+  analyzeAtmosphericInteractions() {
+    if (!this.balloonData || !this.jetStreamData) return;
+    
+    const currentBalloons = this.balloonData[this.currentHour] || [];
+    let balloonsInJetStream = 0;
+    
+    currentBalloons.forEach(balloon => {
+      // Check if balloon is near jet stream altitude (8-15km)
+      if (balloon.altitude >= 8 && balloon.altitude <= 15) {
+        // Check latitude bands for jet streams
+        const nearPolarJet = Math.abs(Math.abs(balloon.lat) - 45) < 10;
+        const nearSubtropicalJet = Math.abs(Math.abs(balloon.lat) - 30) < 10;
+        
+        if (nearPolarJet || nearSubtropicalJet) {
+          balloonsInJetStream++;
+        }
+      }
+    });
+    
+    if (balloonsInJetStream > 0) {
+      this.logMessage(`${balloonsInJetStream} balloons riding jet streams for faster travel`);
     }
   }
 
@@ -247,6 +277,10 @@ class BalloonDataFetcher {
     const hourData = this.balloonData[hour] || [];
     document.getElementById("balloon-count").textContent = hourData.length;
     document.getElementById("current-hour").textContent = hour;
+    
+    // Update atmospheric interactions analysis
+    this.currentHour = hour;
+    this.analyzeAtmosphericInteractions();
 
     // Calculate average altitude
     if (hourData.length > 0) {
