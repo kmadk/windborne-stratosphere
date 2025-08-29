@@ -1,11 +1,10 @@
-# 🚀 Deployment Guide for WindBorne StratoSphere
+# Deployment Guide for WindBorne StratoSphere
 
 ## Quick Deploy to Vercel
 
 ### Step 1: Push to GitHub
 
 1. **Create a new repository on GitHub:**
-
    - Go to https://github.com/new
    - Name it: `windborne-stratosphere`
    - Keep it public
@@ -21,12 +20,10 @@
 ### Step 2: Deploy to Vercel
 
 1. **Go to Vercel:**
-
    - Visit https://vercel.com
    - Sign up/login with GitHub
 
 2. **Import your project:**
-
    - Click "Add New Project"
    - Import your `windborne-stratosphere` repository
    - Click "Deploy"
@@ -36,17 +33,40 @@
    - Vercel will build and deploy automatically
    - You'll get a URL like: `windborne-stratosphere.vercel.app`
 
-### Step 3: Test Your Deployment
+### Step 3: Add Your Resume
+
+**Option 1: Add to Repository (Recommended)**
+```bash
+# Add your resume.pdf to the root directory
+cp ~/path/to/your/resume.pdf ./resume.pdf
+git add resume.pdf
+git commit -m "Add resume"
+git push
+# Your resume URL: https://your-app.vercel.app/resume.pdf
+```
+
+**Option 2: Google Drive**
+1. Upload resume to Google Drive
+2. Right-click → "Get link"
+3. Set to "Anyone with the link can view"
+4. Use that URL in your submission
+
+**Option 3: Dropbox**
+1. Upload to Dropbox
+2. Create shared link
+3. Change `?dl=0` to `?raw=1` in the URL
+4. Use that URL in your submission
+
+### Step 4: Test Your Deployment
 
 Visit your deployed URL and verify:
+- Map loads with balloons
+- Jet streams are visible
+- Time slider works
+- Animation plays smoothly
+- 24 hours of data loads
 
-- ✅ Map loads with balloons
-- ✅ Jet streams are visible
-- ✅ Time slider works
-- ✅ Animation plays smoothly
-- ✅ 24 hours of data loads
-
-## 📝 Prepare Your Application
+## Prepare Your Application
 
 Once deployed, prepare these URLs for your WindBorne application:
 
@@ -56,10 +76,10 @@ Once deployed, prepare these URLs for your WindBorne application:
     "name": "Your Name",
     "email": "your.email@example.com",
     "role": "Flight Team Web Developer",
-    "notes": "Full-stack developer passionate about atmospheric science. I chose jet stream data integration to demonstrate how WindBorne's balloon constellation interacts with global atmospheric dynamics, providing insights into optimal flight paths and weather pattern analysis.",
+    "notes": "Full-stack developer with expertise in real-time data visualization and atmospheric science applications. I integrated jet stream analysis to demonstrate how atmospheric dynamics affect balloon trajectories - understanding these patterns is critical for flight path optimization as jet streams can accelerate balloons to over 200 mph.",
     "submission_url": "https://your-app.vercel.app",
     "portfolio_url": "https://your-app.vercel.app",
-    "resume_url": "https://your-resume-url.com"
+    "resume_url": "https://your-app.vercel.app/resume.pdf"
   }
 }
 ```
@@ -84,23 +104,26 @@ vercel
 # - Override settings: No
 ```
 
-## 🎯 Final Checklist
+## Final Checklist
 
 Before submitting:
-
 - [ ] App is publicly accessible
 - [ ] All 24 hours of data load
 - [ ] Jet streams are visible
 - [ ] Map interactions work
 - [ ] No console errors
-- [ ] Mobile responsive (bonus!)
+- [ ] Resume is accessible
 
-## Need Help?
+## Troubleshooting
 
-Common issues:
+**If deployment fails:**
+- Check that all files are committed
+- Verify API functions are in `/api` directory
+- Ensure `vercel.json` is present
 
-- **CORS errors**: Should be fixed with Vercel functions
-- **Data not loading**: Check browser console
-- **Deploy failed**: Check Vercel logs
+**If data doesn't load:**
+- Check browser console for errors
+- Verify API endpoints are accessible
+- Test: `https://your-app.vercel.app/api/windborne/00`
 
-Good luck with your application! 🚀
+Good luck with your application!
