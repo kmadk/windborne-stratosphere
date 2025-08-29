@@ -67,10 +67,14 @@ async function fetchOpenMeteoWindData() {
 
 async function fetchWindAtPoint(lat, lon, type) {
   try {
+    // Add natural meandering to jet streams (Rossby waves)
+    const latVariation = Math.sin((lon * Math.PI) / 60) * 8;
+    const adjustedLat = lat + latVariation;
+    
     // Open-Meteo API - free, no key required
     // Fetching wind at 250hPa pressure level (jet stream altitude)
     const url = `https://api.open-meteo.com/v1/forecast?` +
-      `latitude=${lat}&longitude=${lon}` +
+      `latitude=${adjustedLat}&longitude=${lon}` +
       `&current=wind_speed_10m,wind_direction_10m` +
       `&hourly=wind_speed_250hPa,wind_direction_250hPa,wind_speed_500hPa,wind_direction_500hPa` +
       `&forecast_days=1` +
@@ -79,7 +83,7 @@ async function fetchWindAtPoint(lat, lon, type) {
     const response = await fetch(url);
     
     if (!response.ok) {
-      console.error(`Failed to fetch data for ${lat},${lon}`);
+      console.error(`Failed to fetch data for ${adjustedLat},${lon}`);
       return null;
     }
     
@@ -121,7 +125,7 @@ async function fetchWindAtPoint(lat, lon, type) {
     const windSpeedKnots = windSpeed250 * 0.539957;
     
     return {
-      lat: lat,
+      lat: adjustedLat,  // Use the adjusted latitude with wave pattern
       lon: lon,
       windSpeed: windSpeedKnots,
       windDirection: windDir250,
