@@ -14,20 +14,6 @@ class BalloonDataFetcher {
     // Detect if running locally or in production
     this.apiBase =
       window.location.hostname === "localhost" ? "http://localhost:8001" : "";
-
-    this.logMessage("Initializing StratoSphere...");
-  }
-
-  logMessage(message, type = "info") {
-    const logDiv = document.getElementById("debug-log");
-    const timestamp = new Date().toLocaleTimeString();
-    const logEntry = document.createElement("div");
-    logEntry.textContent = `[${timestamp}] ${message}`;
-    logEntry.style.color = type === "error" ? "#ff6b6b" : "#888";
-    logDiv.appendChild(logEntry);
-    logDiv.scrollTop = logDiv.scrollHeight;
-
-    console.log(`[${type.toUpperCase()}]`, message);
   }
 
   updateStatus(message) {
@@ -38,7 +24,7 @@ class BalloonDataFetcher {
     const hourStr = String(hour).padStart(2, "0");
     const url = `${this.apiBase}/api/windborne/${hourStr}`;
 
-    this.logMessage(`Fetching hour ${hourStr} data...`);
+
 
     try {
       const response = await fetch(url);
@@ -72,15 +58,10 @@ class BalloonDataFetcher {
         hour: hour,
       }));
 
-      this.logMessage(
-        `Hour ${hourStr}: ${validData.length}/${data.length} valid points`
-      );
+
       return processedData;
     } catch (error) {
-      this.logMessage(
-        `Failed to fetch hour ${hourStr}: ${error.message}`,
-        "error"
-      );
+      console.error(`Failed to fetch hour ${hourStr}: ${error.message}`);
       return [];
     }
   }
@@ -118,9 +99,7 @@ class BalloonDataFetcher {
       (totalPoints / (24 * allHourData[0].length)) * 100
     );
 
-    this.logMessage(`Total data points: ${totalPoints}`);
-    this.logMessage(`Average per hour: ${avgPerHour}`);
-    this.logMessage(`Data quality: ${dataQuality}%`);
+
 
     this.updateStatus("Data loaded successfully!");
     this.updateBalloonDisplay(0);
@@ -151,57 +130,53 @@ class BalloonDataFetcher {
       }
     ).addTo(this.map);
 
-    this.logMessage("Map initialized");
+
 
     // Load jet stream data
     this.loadJetStreamData();
   }
 
   async loadJetStreamData() {
-    this.logMessage("Loading atmospheric weather data...");
+
     try {
       // Fetch real weather data including jet streams
       const response = await fetch(`${this.apiBase}/api/weather`);
       const data = await response.json();
       this.jetStreamData = data;
       this.displayJetStreams();
-      
+
       // Analyze balloon-jet stream interactions
       this.analyzeAtmosphericInteractions();
-      
-      this.logMessage(`Loaded ${data.jetStreams.length} weather data points`);
-      this.logMessage(`Data source: ${data.metadata.dataSource}`);
+
+
       document.getElementById("jet-stream-status").textContent = "✓ Live";
       document.getElementById("jet-stream-status").style.color = "#00ff66";
     } catch (error) {
-      this.logMessage(
-        `Failed to load weather data: ${error.message}`,
-        "error"
-      );
+      console.error(`Failed to load weather data: ${error.message}`);
     }
   }
 
   analyzeAtmosphericInteractions() {
     if (!this.balloonData || !this.jetStreamData) return;
-    
+
     const currentBalloons = this.balloonData[this.currentHour] || [];
     let balloonsInJetStream = 0;
-    
-    currentBalloons.forEach(balloon => {
+
+    currentBalloons.forEach((balloon) => {
       // Check if balloon is near jet stream altitude (8-15km)
       if (balloon.altitude >= 8 && balloon.altitude <= 15) {
         // Check latitude bands for jet streams
         const nearPolarJet = Math.abs(Math.abs(balloon.lat) - 45) < 10;
         const nearSubtropicalJet = Math.abs(Math.abs(balloon.lat) - 30) < 10;
-        
+
         if (nearPolarJet || nearSubtropicalJet) {
           balloonsInJetStream++;
         }
       }
     });
-    
+
     if (balloonsInJetStream > 0) {
-      this.logMessage(`${balloonsInJetStream} balloons riding jet streams for faster travel`);
+
     }
   }
 
@@ -277,7 +252,7 @@ class BalloonDataFetcher {
     const hourData = this.balloonData[hour] || [];
     document.getElementById("balloon-count").textContent = hourData.length;
     document.getElementById("current-hour").textContent = hour;
-    
+
     // Update atmospheric interactions analysis
     this.currentHour = hour;
     this.analyzeAtmosphericInteractions();

@@ -5,8 +5,9 @@ Real-time visualization platform combining WindBorne's balloon constellation wit
 ## Overview
 
 StratoSphere integrates two live data sources to provide insights into high-altitude balloon navigation:
+
 1. **WindBorne API**: Real-time positions of 1000+ stratospheric balloons (24-hour history)
-2. **NOAA GFS Model**: Atmospheric jet stream data showing wind patterns at balloon altitudes
+2. **Open-Meteo API**: Real-time atmospheric wind data at 250hPa pressure level (jet stream altitude)
 
 The platform demonstrates how stratospheric balloons leverage jet streams for efficient global navigation, with some balloons achieving speeds over 200 mph when riding these atmospheric highways.
 
@@ -29,6 +30,7 @@ The platform demonstrates how stratospheric balloons leverage jet streams for ef
 ## Why Atmospheric Data?
 
 WindBorne's balloons don't just drift - they actively navigate by changing altitude to catch different wind layers. By combining balloon telemetry with atmospheric wind data, this platform demonstrates:
+
 - How balloons exploit jet streams for rapid transit
 - Optimal altitude bands for different latitudes
 - The relationship between atmospheric dynamics and balloon trajectories
@@ -39,7 +41,7 @@ WindBorne's balloons don't just drift - they actively navigate by changing altit
 - **Backend**: Vercel serverless functions for API proxying and data processing
 - **Data Sources**: 
   - WindBorne constellation API (24-hour historical data)
-  - NOAA atmospheric models (250mb pressure level winds)
+  - Open-Meteo weather API (real-time atmospheric wind data)
 - **Deployment**: Vercel with automatic CI/CD from GitHub
 
 ## Live Demo

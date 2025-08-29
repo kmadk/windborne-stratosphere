@@ -1,4 +1,4 @@
-// Vercel serverless function for real weather data
+// Vercel serverless function for real weather data from Open-Meteo
 export default async function handler(req, res) {
   // Enable CORS
   res.setHeader("Access-Control-Allow-Origin", "*");
@@ -11,155 +11,155 @@ export default async function handler(req, res) {
   }
 
   try {
-    // Fetch real jet stream data from NOAA
-    // Using 250mb pressure level (approximately jet stream altitude ~10-12km)
-    const jetStreamData = await fetchNOAAJetStreamData();
-    
+    // Fetch real atmospheric data from Open-Meteo
+    const jetStreamData = await fetchOpenMeteoWindData();
     res.status(200).json(jetStreamData);
   } catch (error) {
     console.error("Error fetching weather data:", error);
-    
-    // Fallback to generated data if NOAA is unavailable
-    const fallbackData = generateJetStreamData();
+    // Fallback to generated data if API is unavailable
+    const fallbackData = generateFallbackData();
     res.status(200).json(fallbackData);
   }
 }
 
-async function fetchNOAAJetStreamData() {
-  // NOAA GFS data points for jet stream level (250mb pressure)
-  // This represents winds at approximately 10-12km altitude
+async function fetchOpenMeteoWindData() {
+  // Open-Meteo provides free weather data including upper atmosphere winds
+  // We'll fetch wind data at 250hPa (jet stream level, ~10km altitude)
+  
   const jetStreamPoints = [];
   
-  // Sample key latitudes/longitudes for global coverage
-  const samplePoints = [
-    // Northern Polar Jet
-    ...Array.from({length: 36}, (_, i) => ({lat: 45, lon: i * 10 - 180, type: 'polar_jet_north'})),
-    // Northern Subtropical Jet
-    ...Array.from({length: 36}, (_, i) => ({lat: 30, lon: i * 10 - 180, type: 'subtropical_jet_north'})),
-    // Southern Subtropical Jet
-    ...Array.from({length: 36}, (_, i) => ({lat: -30, lon: i * 10 - 180, type: 'subtropical_jet_south'})),
-    // Southern Polar Jet
-    ...Array.from({length: 36}, (_, i) => ({lat: -50, lon: i * 10 - 180, type: 'polar_jet_south'})),
+  // Sample points along typical jet stream paths
+  const sampleLatitudes = [
+    { lat: 45, type: 'polar_jet_north' },      // Northern polar jet
+    { lat: 30, type: 'subtropical_jet_north' }, // Northern subtropical
+    { lat: -30, type: 'subtropical_jet_south' }, // Southern subtropical  
+    { lat: -50, type: 'polar_jet_south' }       // Southern polar jet
   ];
-
-  // Fetch wind data for each point
-  const windDataPromises = samplePoints.map(async (point) => {
-    try {
-      // Using NOAA's public API endpoint
-      const response = await fetch(
-        `https://api.weather.gov/points/${point.lat.toFixed(4)},${point.lon.toFixed(4)}`
-      );
-      
-      if (!response.ok) {
-        // If NOAA point fails, use calculated wind data
-        return calculateWindForPoint(point);
-      }
-      
-      const data = await response.json();
-      return {
-        lat: point.lat,
-        lon: point.lon,
-        windSpeed: calculateJetStreamSpeed(point),
-        windDirection: calculateJetStreamDirection(point),
-        altitude: point.type.includes('polar') ? 10000 : 12000,
-        type: point.type,
-        source: 'calculated' // Since direct NOAA access requires more complex setup
-      };
-    } catch (err) {
-      return calculateWindForPoint(point);
+  
+  // Fetch data for multiple longitudes to create jet stream bands
+  const promises = [];
+  
+  for (const latBand of sampleLatitudes) {
+    // Sample every 10 degrees of longitude
+    for (let lon = -180; lon <= 180; lon += 10) {
+      promises.push(fetchWindAtPoint(latBand.lat, lon, latBand.type));
     }
-  });
-
-  const results = await Promise.all(windDataPromises);
+  }
+  
+  const results = await Promise.all(promises);
+  const validResults = results.filter(r => r !== null);
   
   return {
-    jetStreams: results.filter(r => r !== null),
+    jetStreams: validResults,
     metadata: {
       generated: new Date().toISOString(),
-      dataSource: "NOAA GFS Model (250mb level)",
-      description: "Real-time jet stream data from NOAA Global Forecast System",
+      dataSource: "Open-Meteo Global Weather API",
+      description: "Real-time atmospheric wind data at 250hPa pressure level (jet stream altitude)",
+      apiUrl: "https://open-meteo.com/",
       units: {
         windSpeed: "knots",
         windDirection: "degrees",
-        altitude: "meters",
-      },
-    },
+        altitude: "meters"
+      }
+    }
   };
 }
 
-function calculateWindForPoint(point) {
-  // Calculate realistic jet stream winds based on atmospheric physics
-  const latRad = point.lat * Math.PI / 180;
-  const lonRad = point.lon * Math.PI / 180;
-  
-  // Jet streams are stronger in winter, vary with longitude (Rossby waves)
-  const seasonalFactor = 1 + 0.3 * Math.sin(Date.now() / (365.25 * 24 * 60 * 60 * 1000) * 2 * Math.PI);
-  const rosbyWave = Math.sin(lonRad * 3) * 10; // 3 wave pattern around Earth
-  
-  let baseSpeed = 0;
-  let baseDirection = 270; // Westerly
-  
-  if (point.type.includes('polar')) {
-    // Polar jets: 30-70 m/s (60-140 knots)
-    baseSpeed = 80 + rosbyWave + Math.random() * 20;
-    baseSpeed *= seasonalFactor;
-    baseDirection = 270 + rosbyWave * 2;
-  } else {
-    // Subtropical jets: 20-40 m/s (40-80 knots)  
-    baseSpeed = 50 + rosbyWave * 0.5 + Math.random() * 15;
-    baseDirection = 270 + rosbyWave;
+async function fetchWindAtPoint(lat, lon, type) {
+  try {
+    // Open-Meteo API - free, no key required
+    // Fetching wind at 250hPa pressure level (jet stream altitude)
+    const url = `https://api.open-meteo.com/v1/forecast?` +
+      `latitude=${lat}&longitude=${lon}` +
+      `&current=wind_speed_10m,wind_direction_10m` +
+      `&hourly=wind_speed_250hPa,wind_direction_250hPa,wind_speed_500hPa,wind_direction_500hPa` +
+      `&forecast_days=1` +
+      `&timezone=UTC`;
+    
+    const response = await fetch(url);
+    
+    if (!response.ok) {
+      console.error(`Failed to fetch data for ${lat},${lon}`);
+      return null;
+    }
+    
+    const data = await response.json();
+    
+    // Get current hour's data (or first available)
+    const currentHour = new Date().getUTCHours();
+    
+    // Get wind data at 250hPa (jet stream level)
+    const windSpeed250 = data.hourly?.wind_speed_250hPa?.[currentHour] || 
+                         data.hourly?.wind_speed_250hPa?.[0];
+    const windDir250 = data.hourly?.wind_direction_250hPa?.[currentHour] || 
+                       data.hourly?.wind_direction_250hPa?.[0];
+    
+    if (windSpeed250 === undefined || windDir250 === undefined) {
+      // If 250hPa data not available, use 500hPa as fallback
+      const windSpeed500 = data.hourly?.wind_speed_500hPa?.[currentHour] || 
+                           data.hourly?.wind_speed_500hPa?.[0];
+      const windDir500 = data.hourly?.wind_direction_500hPa?.[currentHour] || 
+                         data.hourly?.wind_direction_500hPa?.[0];
+      
+      if (windSpeed500 && windDir500) {
+        return {
+          lat: lat,
+          lon: lon,
+          windSpeed: windSpeed500 * 0.539957, // Convert km/h to knots
+          windDirection: windDir500,
+          altitude: 5500, // 500hPa is around 5.5km
+          type: type,
+          source: 'Open-Meteo (500hPa)',
+          pressure: '500hPa'
+        };
+      }
+      
+      return null;
+    }
+    
+    // Convert wind speed from km/h to knots (1 km/h = 0.539957 knots)
+    const windSpeedKnots = windSpeed250 * 0.539957;
+    
+    return {
+      lat: lat,
+      lon: lon,
+      windSpeed: windSpeedKnots,
+      windDirection: windDir250,
+      altitude: type.includes('polar') ? 10000 : 12000, // Jet stream altitude
+      type: type,
+      source: 'Open-Meteo (250hPa)',
+      pressure: '250hPa',
+      timestamp: data.current?.time || new Date().toISOString()
+    };
+    
+  } catch (error) {
+    console.error(`Error fetching wind data for ${lat},${lon}:`, error);
+    return null;
   }
-  
-  // Add some variation based on location
-  const latVariation = Math.sin(lonRad * 2) * (point.type.includes('polar') ? 8 : 4);
-  
-  return {
-    lat: point.lat + latVariation,
-    lon: point.lon,
-    windSpeed: Math.max(20, Math.min(150, baseSpeed)),
-    windDirection: (baseDirection + 360) % 360,
-    altitude: point.type.includes('polar') ? 10000 : 12000,
-    type: point.type,
-    source: 'modeled'
-  };
 }
 
-function calculateJetStreamSpeed(point) {
-  const baseSpeed = point.type.includes('polar') ? 80 : 50;
-  const variation = Math.sin(point.lon * Math.PI / 60) * 20;
-  return Math.max(30, baseSpeed + variation + Math.random() * 20);
-}
-
-function calculateJetStreamDirection(point) {
-  // Jet streams flow west to east with some meandering
-  const baseDirection = 270;
-  const meandering = Math.sin(point.lon * Math.PI / 90) * 30;
-  return (baseDirection + meandering + 360) % 360;
-}
-
-function generateJetStreamData() {
-  // Fallback data generation (same as before but marked as simulated)
+function generateFallbackData() {
+  // Fallback with simulated but realistic jet stream patterns
   const jetStreams = [];
   
-  // Generate jet stream bands
   const bands = [
-    {lat: 45, type: 'polar_jet_north', altitude: 10000, speedRange: [80, 120]},
-    {lat: 30, type: 'subtropical_jet_north', altitude: 12000, speedRange: [60, 90]},
-    {lat: -30, type: 'subtropical_jet_south', altitude: 12000, speedRange: [50, 80]},
-    {lat: -50, type: 'polar_jet_south', altitude: 10000, speedRange: [90, 140]},
+    { lat: 45, type: 'polar_jet_north', altitude: 10000, speedRange: [80, 120] },
+    { lat: 30, type: 'subtropical_jet_north', altitude: 12000, speedRange: [60, 90] },
+    { lat: -30, type: 'subtropical_jet_south', altitude: 12000, speedRange: [50, 80] },
+    { lat: -50, type: 'polar_jet_south', altitude: 10000, speedRange: [90, 140] }
   ];
   
   bands.forEach(band => {
     for (let lon = -180; lon <= 180; lon += 5) {
-      const latVariation = Math.sin(lon * Math.PI / 60) * 8;
+      const latVariation = Math.sin((lon * Math.PI) / 60) * 8;
       jetStreams.push({
         lat: band.lat + latVariation,
         lon: lon,
         windSpeed: band.speedRange[0] + Math.random() * (band.speedRange[1] - band.speedRange[0]),
-        windDirection: 270 + Math.sin(lon * Math.PI / 90) * 30,
+        windDirection: 270 + Math.sin((lon * Math.PI) / 90) * 30,
         altitude: band.altitude,
         type: band.type,
-        source: 'simulated'
+        source: 'simulated (API unavailable)'
       });
     }
   });
@@ -168,7 +168,7 @@ function generateJetStreamData() {
     jetStreams,
     metadata: {
       generated: new Date().toISOString(),
-      dataSource: "Simulated (NOAA unavailable)",
+      dataSource: "Simulated (Open-Meteo unavailable)",
       units: {
         windSpeed: "knots",
         windDirection: "degrees",
