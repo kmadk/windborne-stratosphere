@@ -24,8 +24,6 @@ class BalloonDataFetcher {
     const hourStr = String(hour).padStart(2, "0");
     const url = `${this.apiBase}/api/windborne/${hourStr}`;
 
-
-
     try {
       const response = await fetch(url);
       if (!response.ok) {
@@ -57,7 +55,6 @@ class BalloonDataFetcher {
         altitude: point[2],
         hour: hour,
       }));
-
 
       return processedData;
     } catch (error) {
@@ -99,8 +96,6 @@ class BalloonDataFetcher {
       (totalPoints / (24 * allHourData[0].length)) * 100
     );
 
-
-
     this.updateStatus("Latest flight data visualized!");
     this.updateBalloonDisplay(0);
   }
@@ -130,14 +125,11 @@ class BalloonDataFetcher {
       }
     ).addTo(this.map);
 
-
-
     // Load jet stream data
     this.loadJetStreamData();
   }
 
   async loadJetStreamData() {
-
     try {
       // Fetch real weather data including jet streams
       const response = await fetch(`${this.apiBase}/api/weather`);
@@ -147,7 +139,6 @@ class BalloonDataFetcher {
 
       // Analyze balloon-jet stream interactions
       this.analyzeAtmosphericInteractions();
-
 
       document.getElementById("jet-stream-status").textContent = "✓ Live";
       document.getElementById("jet-stream-status").style.color = "#00ff66";
@@ -178,7 +169,6 @@ class BalloonDataFetcher {
     });
 
     if (balloonsInJetStream > 0) {
-
     }
   }
 
@@ -288,7 +278,7 @@ class BalloonDataFetcher {
       }).addTo(this.map);
 
       marker.bindPopup(`
-        <strong>Balloon ${balloon.id}</strong><br>
+        <strong>${balloon.id}</strong><br>
         Lat: ${balloon.lat.toFixed(3)}°<br>
         Lon: ${balloon.lon.toFixed(3)}°<br>
         Altitude: ${balloon.altitude.toFixed(1)} km<br>
