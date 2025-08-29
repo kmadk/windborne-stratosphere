@@ -97,6 +97,10 @@ class BalloonDataFetcher {
     );
 
     this.updateStatus("Latest flight data visualized!");
+    // Ensure hour 0 is displayed
+    this.currentHour = 0;
+    document.getElementById("time-slider").value = 0;
+    document.getElementById("hour-display").textContent = "0";
     this.updateBalloonDisplay(0);
   }
 
@@ -412,6 +416,10 @@ class BalloonDataFetcher {
   setupTimeControl() {
     const slider = document.getElementById("time-slider");
     const playButton = document.getElementById("play-pause");
+    
+    // Initialize the display
+    slider.value = 0;
+    document.getElementById("hour-display").textContent = "0";
 
     slider.addEventListener("input", (e) => {
       this.currentHour = parseInt(e.target.value);
