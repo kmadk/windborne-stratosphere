@@ -1,0 +1,24 @@
+RESUME PLACEHOLDER
+==================
+
+After deployment, you can upload your resume using one of these methods:
+
+Option 1: Add to this repository
+---------------------------------
+1. Replace this file with your actual resume.pdf
+2. Commit and push to GitHub
+3. Your resume URL will be: https://your-vercel-url.vercel.app/resume.pdf
+
+Option 2: Use Google Drive
+--------------------------
+1. Upload resume to Google Drive
+2. Right-click → "Get link"
+3. Change permission to "Anyone with the link can view"
+4. Use that URL in your submission
+
+Option 3: Use Dropbox
+---------------------
+1. Upload to Dropbox
+2. Create a shared link
+3. Change the "?dl=0" at the end to "?raw=1"
+4. Use that URL in your submission

@@ -1,8 +1,6 @@
 # WindBorne Application Submission Template
 
-Once your app is deployed, use this template for your application:
-
-## Application JSON
+## Application JSON Format
 
 ```json
 {
@@ -10,7 +8,7 @@ Once your app is deployed, use this template for your application:
     "name": "YOUR_NAME",
     "email": "YOUR_EMAIL",
     "role": "Flight Team Web Developer",
-    "notes": "Full-stack developer passionate about atmospheric science and real-time data visualization. I chose to integrate jet stream data because understanding atmospheric dynamics is crucial for optimizing balloon flight paths - jet streams can accelerate balloons to 200+ mph, dramatically affecting trajectory predictions and mission planning.",
+    "notes": "Full-stack developer with expertise in real-time data visualization and atmospheric science applications. I integrated jet stream analysis to demonstrate how atmospheric dynamics affect balloon trajectories - understanding these patterns is critical for flight path optimization as jet streams can accelerate balloons to over 200 mph.",
     "submission_url": "YOUR_VERCEL_URL",
     "portfolio_url": "YOUR_VERCEL_URL",
     "resume_url": "YOUR_RESUME_URL"
@@ -18,9 +16,7 @@ Once your app is deployed, use this template for your application:
 }
 ```
 
-## Submit via cURL
-
-Once you have all URLs ready:
+## Submission Command
 
 ```bash
 curl -X POST https://windbornesystems.com/career_applications.json \
@@ -30,7 +26,7 @@ curl -X POST https://windbornesystems.com/career_applications.json \
       "name": "YOUR_NAME",
       "email": "YOUR_EMAIL",
       "role": "Flight Team Web Developer",
-      "notes": "Full-stack developer passionate about atmospheric science and real-time data visualization. I chose to integrate jet stream data because understanding atmospheric dynamics is crucial for optimizing balloon flight paths - jet streams can accelerate balloons to 200+ mph, dramatically affecting trajectory predictions and mission planning.",
+      "notes": "Full-stack developer with expertise in real-time data visualization and atmospheric science applications. I integrated jet stream analysis to demonstrate how atmospheric dynamics affect balloon trajectories - understanding these patterns is critical for flight path optimization as jet streams can accelerate balloons to over 200 mph.",
       "submission_url": "YOUR_VERCEL_URL",
       "portfolio_url": "YOUR_VERCEL_URL",
       "resume_url": "YOUR_RESUME_URL"
@@ -38,36 +34,41 @@ curl -X POST https://windbornesystems.com/career_applications.json \
   }'
 ```
 
-## What Your App Demonstrates
+## Technical Capabilities Demonstrated
 
-✅ **Technical Skills:**
-- Real-time data fetching and error handling
-- Serverless API design with Vercel functions
+### Core Requirements
+- Real-time data fetching from WindBorne API
+- Robust error handling for corrupted data
+- Dynamic updates with 24-hour data history
+- Interactive web application with live data
+
+### Additional Features
+- Serverless API architecture with Vercel
+- CORS handling through proxy functions
 - Interactive map visualization with Leaflet
-- Dynamic data updates (24-hour animation)
-- CORS handling and API proxying
+- Data validation and quality metrics
+- Time-series animation controls
+- Atmospheric jet stream integration
 
-✅ **Scientific Understanding:**
-- Jet stream visualization at correct latitudes
-- Atmospheric layer representation
-- Wind direction and speed indicators
-- Balloon altitude distribution analysis
+### Engineering Practices
+- Clean, maintainable code structure
+- Error resilience and data validation
+- Performance optimization for 1000+ data points
+- Responsive design and smooth animations
 
-✅ **User Experience:**
-- Clean, dark-themed UI
-- Smooth animations
-- Interactive balloon selection
-- Real-time data updates
-- Debug logging for transparency
+## Pre-Submission Checklist
 
-## Before Submitting, Verify:
+- [ ] Application loads at Vercel URL
+- [ ] 1000+ balloons display on map
+- [ ] Jet streams render correctly
+- [ ] Time slider functions properly
+- [ ] Animation plays smoothly
+- [ ] Balloon selection shows trajectory
+- [ ] No console errors present
+- [ ] Resume uploaded to public URL
+- [ ] All form fields completed
 
-- [ ] App loads at your Vercel URL
-- [ ] 1000+ balloons appear on map
-- [ ] Jet streams are visible (purple and cyan lines)
-- [ ] Time slider animates through 24 hours
-- [ ] Click on balloons shows trajectory
-- [ ] No console errors in browser
-- [ ] Resume is uploaded somewhere public (Google Drive, Dropbox, etc.)
+## Expected Response
 
-Good luck! 🚀
+Status 200 indicates successful submission.
+Any other status code means the submission was not accepted - check response body for details.

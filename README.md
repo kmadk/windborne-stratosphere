@@ -1,62 +1,90 @@
 # StratoSphere - WindBorne Atmospheric Intelligence
 
-## Current Progress: Step 3 - Jet Stream Integration
+Real-time visualization platform for WindBorne's balloon constellation with integrated atmospheric jet stream analysis.
 
-### How to Run
+## Overview
 
-1. Start the server: `node atmospheric-proxy.js`
-2. Open browser: http://localhost:8001
-3. Watch as it loads balloon data AND jet streams
-4. Interact with the map and atmospheric features
+This application visualizes WindBorne's global balloon constellation data alongside atmospheric jet streams, demonstrating how high-altitude balloons interact with atmospheric dynamics. The platform fetches 24 hours of live balloon telemetry and renders it with interactive mapping and analysis tools.
 
-### Features Implemented
+## Features
 
-#### Step 1: ✅ Basic Data Fetching
+### Data Processing
+- Fetches 24 hours of balloon position data from WindBorne API
+- Validates and cleans corrupted data points
+- Handles missing or malformed JSON gracefully
+- Tracks data quality metrics and balloon statistics
+- Real-time altitude distribution analysis
 
-- Fetches 24 hours of balloon position data
-- Validates and cleans corrupted data
-- Shows balloon count and data quality metrics
-- Displays altitude statistics
+### Interactive Visualization
+- Global map with 1000+ balloon positions using Leaflet.js
+- Time control system for viewing any hour (0-23) with playback
+- Color-coded altitude visualization (0-25km range)
+- Click-to-select balloons with 24-hour trajectory display
+- Live altitude distribution histogram using Chart.js
 
-#### Step 2: ✅ Interactive Map Visualization
+### Atmospheric Analysis
+- Global jet stream visualization with accurate positioning
+- Polar jets at 45° latitude (10km altitude, 80-120 knots)
+- Subtropical jets at 30° latitude (12km altitude, 60-90 knots)
+- Wind direction indicators and speed visualization
+- Interactive jet stream information panels
 
-- **Leaflet Map**: Interactive world map with balloon positions
-- **Time Control**: Slider to view any hour (0-23) and play animation
-- **Altitude Visualization**: Color-coded markers based on altitude
-- **Balloon Selection**: Click any balloon to see details
-- **Trajectory Display**: Shows 24-hour path when balloon is selected
-- **Altitude Chart**: Live histogram of altitude distribution
-- **Auto-play**: Animation through 24 hours of data
+## Technical Implementation
 
-#### Step 3: ✅ Jet Stream Visualization
+### Architecture
+- Serverless API functions deployed on Vercel
+- Client-side data processing and visualization
+- CORS-compliant API proxying
+- Robust error handling with data validation
 
-- **Live Jet Streams**: Real-time visualization of global jet streams
-- **Polar Jets**: Northern and Southern hemisphere polar jet streams (purple)
-- **Subtropical Jets**: Northern and Southern subtropical jets (cyan)
-- **Wind Indicators**: Directional arrows showing wind flow
-- **Interactive Info**: Click jet streams to see wind speed and altitude
-- **Atmospheric Integration**: Shows how balloons interact with jet streams
+### Technology Stack
+- Frontend: HTML5, CSS3, JavaScript (ES6+)
+- Mapping: Leaflet.js
+- Charts: Chart.js
+- Backend: Node.js serverless functions
+- Deployment: Vercel
 
-### Interactive Features
+## Running Locally
 
-- 🗺️ Pan and zoom the map
-- ⏯️ Play/pause time animation
-- 🎯 Click balloons for detailed information
-- 📊 Real-time altitude distribution chart
-- 🌈 Color-coded altitude visualization
-- 💨 Jet stream visualization with wind speeds
-- 🌪️ Wind direction indicators
-- 🌍 Global atmospheric patterns
+```bash
+# Install dependencies (if needed)
+npm install
 
-### Files
+# Start development server
+node atmospheric-proxy.js
 
-- `index.html` - Enhanced HTML with map and controls
-- `styles.css` - Dark theme with atmospheric styling
-- `app.js` - Full interactive visualization logic
+# Open browser
+http://localhost:8001
+```
 
-### Next Steps
+## Production Deployment
 
-- Step 3: Integrate atmospheric data (NASA, NOAA)
-- Step 4: Add wind patterns and jet stream visualization
-- Step 5: Scientific analysis features (gravity waves, stratospheric dynamics)
-- Step 6: 3D visualization and atmospheric layers
+Deployed on Vercel with automatic CI/CD from GitHub.
+See `DEPLOY_GUIDE.md` for deployment instructions.
+
+## Project Structure
+
+```
+windborne-stratosphere/
+├── api/                      # Vercel serverless functions
+│   ├── windborne/[hour].js  # Balloon data proxy
+│   └── jetstream.js         # Jet stream data generation
+├── index.html               # Main application
+├── app-production.js        # Core application logic
+├── styles.css              # Application styling
+└── vercel.json            # Deployment configuration
+```
+
+## API Endpoints
+
+- `/api/windborne/[hour]` - Returns balloon positions for specified hour (00-23)
+- `/api/jetstream` - Returns global jet stream data
+
+## Data Format
+
+Balloon data: `[latitude, longitude, altitude]` arrays
+Jet stream data: Objects with position, wind speed, direction, and altitude
+
+## License
+
+MIT

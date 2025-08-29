@@ -3,8 +3,7 @@
   "version": "1.0.0",
   "description": "StratoSphere - Real-time atmospheric intelligence platform for WindBorne balloon constellation",
   "scripts": {
-    "dev": "node atmospheric-proxy.js",
-    "build": "echo 'No build step required'"
+    "dev": "node atmospheric-proxy.js"
   },
   "author": "Your Name",
   "license": "MIT"
