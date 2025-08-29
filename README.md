@@ -27,23 +27,6 @@ The platform demonstrates how stratospheric balloons leverage jet streams for ef
 - Data quality metrics and error handling for corrupted telemetry
 - Balloon-jet stream interaction analysis
 
-## Why Atmospheric Data?
-
-WindBorne's balloons don't just drift - they actively navigate by changing altitude to catch different wind layers. By combining balloon telemetry with atmospheric wind data, this platform demonstrates:
-
-- How balloons exploit jet streams for rapid transit
-- Optimal altitude bands for different latitudes
-- The relationship between atmospheric dynamics and balloon trajectories
-
-## Technical Architecture
-
-- **Frontend**: Vanilla JavaScript with Leaflet.js for mapping and Chart.js for analytics
-- **Backend**: Vercel serverless functions for API proxying and data processing
-- **Data Sources**: 
-  - WindBorne constellation API (24-hour historical data)
-  - Open-Meteo weather API (real-time atmospheric wind data)
-- **Deployment**: Vercel with automatic CI/CD from GitHub
-
 ## Live Demo
 
 https://windborne-stratosphere.vercel.app
