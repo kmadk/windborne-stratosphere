@@ -101,7 +101,7 @@ class BalloonDataFetcher {
 
 
 
-    this.updateStatus("Data loaded successfully!");
+    this.updateStatus("Latest flight data visualized!");
     this.updateBalloonDisplay(0);
   }
 
@@ -153,6 +153,8 @@ class BalloonDataFetcher {
       document.getElementById("jet-stream-status").style.color = "#00ff66";
     } catch (error) {
       console.error(`Failed to load weather data: ${error.message}`);
+      document.getElementById("jet-stream-status").textContent = "⚠ Simulated";
+      document.getElementById("jet-stream-status").style.color = "#ffaa00";
     }
   }
 
