@@ -131,15 +131,15 @@ class BalloonDataFetcher {
     this.loadJetStreamData();
   }
 
-    async loadJetStreamData() {
+  async loadJetStreamData() {
     try {
       // Fetch real weather data including jet streams
       const response = await fetch(`${this.apiBase}/api/weather`);
-      
+
       if (!response.ok) {
         throw new Error(`HTTP ${response.status}: ${response.statusText}`);
       }
-      
+
       const data = await response.json();
       this.jetStreamData = data;
       this.displayJetStreams();
@@ -149,7 +149,8 @@ class BalloonDataFetcher {
         document.getElementById("jet-stream-status").textContent = "✓ Live";
         document.getElementById("jet-stream-status").style.color = "#00ff66";
       } else {
-        document.getElementById("jet-stream-status").textContent = "⚠ Simulated";
+        document.getElementById("jet-stream-status").textContent =
+          "⚠ Simulated";
         document.getElementById("jet-stream-status").style.color = "#ffaa00";
       }
     } catch (error) {
