@@ -401,7 +401,8 @@ class BalloonDataFetcher {
           this.map.removeLayer(this.trajectoryLine);
           this.trajectoryLine = null;
         }
-        document.getElementById("selected-balloon").innerHTML = "Click on a balloon to see its 24-hour trajectory";
+        document.getElementById("selected-balloon").innerHTML =
+          "Click on a balloon to see its 24-hour trajectory";
       }
     });
 
@@ -425,7 +426,8 @@ class BalloonDataFetcher {
         this.map.removeLayer(this.trajectoryLine);
         this.trajectoryLine = null;
       }
-      document.getElementById("selected-balloon").innerHTML = "Click on a balloon to see its 24-hour trajectory";
+      document.getElementById("selected-balloon").innerHTML =
+        "Click on a balloon to see its 24-hour trajectory";
     }
 
     this.currentHour = (this.currentHour + 1) % 24;
