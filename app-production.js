@@ -8,12 +8,10 @@ class BalloonDataFetcher {
     this.altitudeChart = null;
     this.isPlaying = false;
     this.selectedBalloon = null;
+    this.trajectoryLine = null;
     this.jetStreamLayer = null;
     this.jetStreamData = null;
-
-    // Detect if running locally or in production
-    this.apiBase =
-      window.location.hostname === "localhost" ? "http://localhost:8001" : "";
+    this.apiBase = ""; // Always use relative paths for production
   }
 
   updateStatus(message) {
@@ -141,38 +139,12 @@ class BalloonDataFetcher {
       this.jetStreamData = data;
       this.displayJetStreams();
 
-      // Analyze balloon-jet stream interactions
-      this.analyzeAtmosphericInteractions();
-
       document.getElementById("jet-stream-status").textContent = "✓ Live";
       document.getElementById("jet-stream-status").style.color = "#00ff66";
     } catch (error) {
       console.error(`Failed to load weather data: ${error.message}`);
       document.getElementById("jet-stream-status").textContent = "⚠ Simulated";
       document.getElementById("jet-stream-status").style.color = "#ffaa00";
-    }
-  }
-
-  analyzeAtmosphericInteractions() {
-    if (!this.balloonData || !this.jetStreamData) return;
-
-    const currentBalloons = this.balloonData[this.currentHour] || [];
-    let balloonsInJetStream = 0;
-
-    currentBalloons.forEach((balloon) => {
-      // Check if balloon is near jet stream altitude (8-15km)
-      if (balloon.altitude >= 8 && balloon.altitude <= 15) {
-        // Check latitude bands for jet streams
-        const nearPolarJet = Math.abs(Math.abs(balloon.lat) - 45) < 10;
-        const nearSubtropicalJet = Math.abs(Math.abs(balloon.lat) - 30) < 10;
-
-        if (nearPolarJet || nearSubtropicalJet) {
-          balloonsInJetStream++;
-        }
-      }
-    });
-
-    if (balloonsInJetStream > 0) {
     }
   }
 
@@ -248,10 +220,7 @@ class BalloonDataFetcher {
     const hourData = this.balloonData[hour] || [];
     document.getElementById("balloon-count").textContent = hourData.length;
     document.getElementById("current-hour").textContent = hour;
-
-    // Update atmospheric interactions analysis
     this.currentHour = hour;
-    this.analyzeAtmosphericInteractions();
 
     // Calculate average altitude
     if (hourData.length > 0) {
@@ -416,7 +385,7 @@ class BalloonDataFetcher {
   setupTimeControl() {
     const slider = document.getElementById("time-slider");
     const playButton = document.getElementById("play-pause");
-    
+
     // Initialize the display
     slider.value = 0;
     document.getElementById("hour-display").textContent = "0";
@@ -425,6 +394,15 @@ class BalloonDataFetcher {
       this.currentHour = parseInt(e.target.value);
       document.getElementById("hour-display").textContent = this.currentHour;
       this.updateBalloonDisplay(this.currentHour);
+      // Clear balloon selection when time changes
+      if (this.selectedBalloon) {
+        this.selectedBalloon = null;
+        if (this.trajectoryLine) {
+          this.map.removeLayer(this.trajectoryLine);
+          this.trajectoryLine = null;
+        }
+        document.getElementById("selected-balloon").innerHTML = "Click on a balloon to see its 24-hour trajectory";
+      }
     });
 
     playButton.addEventListener("click", () => {
@@ -439,6 +417,16 @@ class BalloonDataFetcher {
 
   animate() {
     if (!this.isPlaying) return;
+
+    // Clear balloon selection during animation
+    if (this.selectedBalloon) {
+      this.selectedBalloon = null;
+      if (this.trajectoryLine) {
+        this.map.removeLayer(this.trajectoryLine);
+        this.trajectoryLine = null;
+      }
+      document.getElementById("selected-balloon").innerHTML = "Click on a balloon to see its 24-hour trajectory";
+    }
 
     this.currentHour = (this.currentHour + 1) % 24;
     document.getElementById("time-slider").value = this.currentHour;
