@@ -131,7 +131,7 @@ class BalloonDataFetcher {
     this.loadJetStreamData();
   }
 
-  async loadJetStreamData() {
+    async loadJetStreamData() {
     try {
       // Fetch real weather data including jet streams
       const response = await fetch(`${this.apiBase}/api/weather`);
@@ -144,27 +144,19 @@ class BalloonDataFetcher {
       this.jetStreamData = data;
       this.displayJetStreams();
 
-      document.getElementById("jet-stream-status").textContent = "✓ Live";
-      document.getElementById("jet-stream-status").style.color = "#00ff66";
+      // Check if we got real or simulated data
+      if (data.metadata?.dataSource?.includes("Open-Meteo")) {
+        document.getElementById("jet-stream-status").textContent = "✓ Live";
+        document.getElementById("jet-stream-status").style.color = "#00ff66";
+      } else {
+        document.getElementById("jet-stream-status").textContent = "⚠ Simulated";
+        document.getElementById("jet-stream-status").style.color = "#ffaa00";
+      }
     } catch (error) {
       console.error(`Failed to load weather data:`, error);
       console.error(`API URL was: ${this.apiBase}/api/weather`);
-      document.getElementById("jet-stream-status").textContent = "⚠ Simulated";
-      document.getElementById("jet-stream-status").style.color = "#ffaa00";
-      
-      // Try to load fallback data
-      try {
-        const fallbackResponse = await fetch(`${this.apiBase}/api/weather`);
-        if (fallbackResponse.ok) {
-          const fallbackData = await fallbackResponse.json();
-          if (fallbackData.metadata?.dataSource?.includes("Simulated")) {
-            this.jetStreamData = fallbackData;
-            this.displayJetStreams();
-          }
-        }
-      } catch (fallbackError) {
-        console.error("Fallback also failed:", fallbackError);
-      }
+      document.getElementById("jet-stream-status").textContent = "✗ Failed";
+      document.getElementById("jet-stream-status").style.color = "#ff3333";
     }
   }
 
