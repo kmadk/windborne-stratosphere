@@ -11,7 +11,7 @@ class BalloonDataFetcher {
     this.trajectoryLine = null;
     this.jetStreamLayer = null;
     this.jetStreamData = null;
-    this.apiBase = ""; // Always use relative paths for production
+    this.apiBase = ""; // Always use relative paths
   }
 
   updateStatus(message) {
@@ -135,6 +135,11 @@ class BalloonDataFetcher {
     try {
       // Fetch real weather data including jet streams
       const response = await fetch(`${this.apiBase}/api/weather`);
+      
+      if (!response.ok) {
+        throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+      }
+      
       const data = await response.json();
       this.jetStreamData = data;
       this.displayJetStreams();
@@ -142,9 +147,24 @@ class BalloonDataFetcher {
       document.getElementById("jet-stream-status").textContent = "✓ Live";
       document.getElementById("jet-stream-status").style.color = "#00ff66";
     } catch (error) {
-      console.error(`Failed to load weather data: ${error.message}`);
+      console.error(`Failed to load weather data:`, error);
+      console.error(`API URL was: ${this.apiBase}/api/weather`);
       document.getElementById("jet-stream-status").textContent = "⚠ Simulated";
       document.getElementById("jet-stream-status").style.color = "#ffaa00";
+      
+      // Try to load fallback data
+      try {
+        const fallbackResponse = await fetch(`${this.apiBase}/api/weather`);
+        if (fallbackResponse.ok) {
+          const fallbackData = await fallbackResponse.json();
+          if (fallbackData.metadata?.dataSource?.includes("Simulated")) {
+            this.jetStreamData = fallbackData;
+            this.displayJetStreams();
+          }
+        }
+      } catch (fallbackError) {
+        console.error("Fallback also failed:", fallbackError);
+      }
     }
   }
 
